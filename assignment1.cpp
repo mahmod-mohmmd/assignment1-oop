@@ -1,0 +1,390 @@
+
+
+/*
+======================================
+
+Image Processing Application
+
+CS213 - Assignment 1 - part 1 
+
+File : CS213_A1_Part1_Section33_20240556_20240024_20240210.cpp
+
+Description : This program implements an image processing filters application 
+
+======================================
+
+Team Members:
+
+1. Mahmoud Mohamed - ID : 20240556 (Filters: Invert , Rotate , Menu )
+
+2. Ahmed Hassan    - ID : 20240024 (Filters: Grayscale , Merge )
+
+3. Zyad Osama      - ID : 20240210 (Filters: Black and White , Flip)
+
+Section : s33
+
+======================================
+*/
+
+#include <iostream>
+#include <string>
+#include "Image_Class.h"
+
+using namespace std;
+
+//Menu functions
+
+string currentImage = "";
+
+bool isValidExtension(string filename){
+    string ext = filename.substr(filename.find_last_of(".") + 1);
+    return ext == "bmp" || ext == "png" || ext == "jpg" || ext == "jpeg";
+}
+
+
+void Menu() {
+    cout << "Welcome to the Image Processing Application!" << endl;
+    cout << "1. Load Image" << endl;
+    cout << "2. Process Image" << endl;
+    cout << "3. Save Image" << endl;
+    cout << "4. Exit" << endl;
+    cout << "Please select an option: ";
+}
+
+void FiltersMenu() {
+    cout << "Available Filters:" << endl;
+    cout << "1. Grayscale Conversion" << endl;
+    cout << "2. Black and White" << endl;
+    cout << "3. Invert Image" << endl;
+    cout << "4. Merge Images" << endl;
+    cout << "5. Flip Image" << endl;
+    cout << "6. Rotate Image" << endl;
+    cout << "0. Back to Main Menu" << endl;
+    cout << "Please select a filter: ";
+}
+
+bool LoadImage(Image& image) {
+    string filename ;
+    cout << "Enter the filename to load: ";
+    cin >> filename ;
+
+    if (!isValidExtension(filename)) {
+        cout << "Invalid file extension. Please use bmp, png, jpg, or jpeg." << endl;
+        return false;
+    }
+
+    try {
+        image = Image(filename);
+        currentImage = filename;
+        cout << "Image loaded successfully!" << image.width << "x" << image.height << endl;
+        return true;
+    }
+    catch(const exception& e) {
+        cout << "Failed to load image. Please check the filename and try again." << endl;
+        return false;
+    }
+}
+void SaveImage(Image& image){
+    string filename ;
+    if(!currentImage.empty()){
+        char choice;
+        cout << "Do you want to save the image with the same name (" << currentImage << ")? (y/n): ";
+        cin >> choice;
+        if(choice == 'y' || choice == 'Y'){
+            filename = currentImage;
+        }
+        else{
+            cout << "Enter the new filename : ";
+            cin >> filename ;
+
+            if (!isValidExtension(filename)) {
+                cout << "Invalid file extension. Please use bmp, png, jpg, or jpeg." << endl;
+                return;
+            }
+        }
+    }
+    else {
+        cout << "No image loaded. Please enter a filename to save the image: ";
+        cin >> filename ;
+
+        if (!isValidExtension(filename)) {
+            cout << "Invalid file extension. Please use bmp, png, jpg, or jpeg." << endl;
+            return;
+        }
+    }
+
+    try {
+        image.saveImage(filename);
+        currentImage = filename;
+        cout << "Image saved successfully!" << endl;
+    }
+    catch(const exception& e) {
+        cout << "Failed to save image. Please check the filename and try again." << endl;
+    }
+}
+// FILTERS :
+
+// filter 1 : grayscale
+
+void GrayscaleImage(Image& image){
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            unsigned int avg=0;
+            for (int k = 0; k < 3; k++) {
+
+                avg+=image(i,j,k);
+            }
+            avg=avg/3;
+            for(int k=0;k<3;k++) {
+                image(i,j,k)= avg;
+            }
+        }
+
+    }
+    cout << "Image converted to grayscale successfully!" << endl;
+}
+
+//Filter 2: Black and White
+
+void BlackAndWhiteImage(Image& image) {
+    int x = 128;
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            unsigned int avg = 0;
+            for (int k = 0; k < 3; k++) {
+                avg += image(i, j, k);
+            }
+            avg = avg / 3;
+            unsigned int bw;
+            if (avg > x) {
+                bw = 255;
+            } else {
+                bw = 0;
+            }
+            for (int k = 0; k < 3; k++) {
+                image(i, j, k) = bw;
+            }
+        }
+    }
+    cout << "Image converted to black and white successfully!" << endl;
+}
+
+//Filter 3: Invert Image
+
+void InvertImage(Image& image) {
+    for(int i = 0 ; i < image.width ; i++){
+        for(int j = 0 ; j < image.height ; j++){
+            for(int k = 0 ; k < image.channels ; k++){
+                image(i, j, k) = 255 - image(i, j, k);}
+        }
+    }
+    cout << "Image inverted successfully!" << endl;
+}
+
+//Filter 4: Merge Images
+
+void MergeImages(Image& image) {
+    string filename;
+    cout << "Enter the filename of the second image: ";
+    cin >> filename;
+
+    Image secondImage(filename);
+
+    int minWidth = min(image.width, secondImage.width);
+    int minHeight = min(image.height, secondImage.height);
+
+    for(int i = 0; i < minWidth; i++) {
+        for(int j = 0; j < minHeight; j++) {
+            for(int k = 0; k < image.channels; k++) {
+                image(i, j, k) = (image(i, j, k) + secondImage(i, j, k)) / 2;
+            }
+        }
+    }
+    cout << "Images merged successfully!" << endl;
+}
+
+//Filter 5: Flip Image
+
+void FlipImage(Image& image) {
+     int x;
+    cout << "choose 1.Flip horizontal\n2.flip vertical\n?";
+    cin >> x;
+    if (x == 1) {
+        for (int i = 0; i < image.height; i++)
+            for (int j = 0; j < image.width / 2; j++)
+                for (int k = 0; k < image.channels; k++)
+                    swap(image(j, i, k), image(image.width - 1 - j, i, k));
+        image.saveImage("flipped_horizontal.png");
+    }
+    else if (x == 2) {
+        for (int i = 0; i < image.height / 2; i++)
+            for (int j = 0; j < image.width; j++)
+                for (int k = 0; k < image.channels; k++)
+                    swap(image(j, i, k), image(j, image.height - 1 - i, k));
+        image.saveImage("flipped_vertical.png");
+    }
+    else {
+        cout << "invalid choice";
+    }
+    cout << "Image flipped successfully!" << endl;
+}
+
+//Filter 6: Rotate Image
+
+void RotateImage(Image& image){
+    cout << "choose the angle of rotation (90, 180, 270): ";
+    int angle;
+    cin >> angle;
+    switch (angle)
+    {
+
+    case 90:
+        {
+            Image rotatedImage(image.height, image.width);
+            for (int i = 0; i < image.width; i++) {
+                for (int j = 0; j < image.height; j++) {
+                    for (int k = 0; k < image.channels; k++) {
+                        rotatedImage(j, image.width - 1 - i, k) = image(i, j, k);
+                    }
+                }
+            }
+            image = rotatedImage;
+            cout << "Image rotated by 90 degrees successfully!" << endl;
+        }
+        break;
+    case 180:
+        {
+            Image rotatedImage(image.width, image.height);
+            for (int i = 0; i < image.width; i++) {
+                for (int j = 0; j < image.height; j++) {
+                    for (int k = 0; k < image.channels; k++) {
+                        rotatedImage(image.width - 1 - i, image.height - 1 - j, k) = image(i, j, k);
+                    }
+                }
+            }
+            image = rotatedImage;
+            cout << "Image rotated by 180 degrees successfully!" << endl;
+        }
+        break;
+    case 270:
+        {
+            Image rotatedImage(image.height, image.width);
+            for (int i = 0; i < image.width; i++) {
+                for (int j = 0; j < image.height; j++) {
+                    for (int k = 0; k < image.channels; k++) {
+                        rotatedImage(image.height - 1 - j, i, k) = image(i, j, k);
+                    }
+                }
+            }
+            image = rotatedImage;
+            cout << "Image rotated by 270 degrees successfully!" << endl;
+        }
+        break;
+    default:
+        cout << "Invalid angle. Please choose 90, 180, or 270." << endl;
+        break;
+    }
+}
+
+// Main function 
+
+int main () {
+    Image image;
+    bool imageLoaded = false;
+    int choice;
+    cout << "Welcome to the Image Processing Application!" << endl;
+    cout << "Please load an image to start..." << endl;
+
+    while (!imageLoaded) {
+        imageLoaded = LoadImage(image);
+    }
+
+    while(true) {
+        Menu ();
+        cin >> choice ;
+
+        if (choice ==1) {
+            if(imageLoaded){
+                char save ;
+                cout << "Do you want to save the current image before loading a new one? (y/n): ";
+                cin >> save ;
+                if (save == 'y' || save == 'Y') {
+                    SaveImage(image);
+                }
+                imageLoaded = LoadImage(image);
+            }
+        }
+        else if (choice == 2 ){
+            if(imageLoaded){
+                int filterChoice;
+                bool backToMainMenu = false;
+                do{
+                    FiltersMenu();
+                    cin >> filterChoice;
+                    if(filterChoice == 1){
+                        GrayscaleImage(image);
+                    }
+                    else if(filterChoice == 2){
+                        BlackAndWhiteImage(image);
+                    }
+                    else if(filterChoice == 3){
+                        InvertImage(image);
+                    }
+                    else if(filterChoice == 4){
+                        MergeImages(image);
+                    }
+                    else if(filterChoice == 5){
+                        FlipImage(image);
+                    }
+                    else if(filterChoice == 6){
+                        RotateImage(image);
+                    }
+                    else if(filterChoice == 0){
+                        cout << "Returning to Main Menu..." << endl;
+                        backToMainMenu = true;
+                    }
+                    else{
+                        cout << "Invalid choice. Please try again." << endl;
+                    }
+
+                    if(filterChoice >=1 && filterChoice <=6){
+                        char applyAnother;
+                        cout << "Do you want to apply another filter? (y/n): ";
+                        cin >> applyAnother;
+                        if(applyAnother == 'n' || applyAnother == 'N'){
+                            backToMainMenu = true;
+                        }
+                    }
+
+                } while(!backToMainMenu);
+            }
+            else{
+                cout << "No image loaded. Please load an image " << endl;
+            }
+        }
+        else if (choice == 3 ){
+            if(imageLoaded){
+                SaveImage(image);
+            }
+            else{
+                cout << "No image loaded. Please load an image " << endl;
+            }
+        }
+        else if (choice == 4 ){
+            if(imageLoaded){
+                char save ;
+                cout << "Do you want to save the current image before exiting? (y/n): ";
+                cin >> save ;
+                if (save == 'y' || save == 'Y') {
+                    SaveImage(image);
+                }
+            }
+            cout << "Exiting the application. Goodbye!" << endl;
+            break;
+        }
+        else {
+            cout << "Invalid choice. Please try again." << endl;
+        }
+    }
+    return 0;
+}
