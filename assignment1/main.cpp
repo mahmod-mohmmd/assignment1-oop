@@ -62,6 +62,7 @@ void FiltersMenu() {
     cout << "6. Rotate Image" << endl;
     cout << "9. Add Frame to Image" << endl;
     cout << "12. Blur Image" << endl;
+    cout << "13. sun effect(Bounce)" << endl;
     cout << "0. Back to Main Menu" << endl;
     cout << "Please select a filter: ";
 }
@@ -419,6 +420,21 @@ void BlurImage(Image& image){
 }
 
 
+//filter 13 : (bounce) sun effect
+void sun(Image& image){
+    for(int i = 0 ; i < image.width ; i++){
+        for(int j = 0 ; j < image.height ; j++){
+            image(i,j,0)=min(255,image(i,j,0)+30);
+            image(i,j,1)=min(255,image(i,j,1)+30);
+            image(i,j,2)=max(0,image(i,j,2)-30);
+
+        }
+    }
+    cout << "Sun effect applied successfully!" << endl;
+}
+
+
+
 int main () {
     Image image;
     bool imageLoaded = false;
@@ -476,6 +492,10 @@ int main () {
                     else if(filterChoice == 12){
                         BlurImage(image);
                     }
+                    else if(filterChoice == 13){
+                        sun(image);
+                    }
+
                     else if(filterChoice == 0){
                         cout << "Returning to Main Menu..." << endl;
                         backToMainMenu = true;
@@ -484,7 +504,7 @@ int main () {
                         cout << "Invalid choice. Please try again." << endl;
                     }
 
-                    if(filterChoice >=1 && filterChoice <=12){
+                    if(filterChoice >=1 && filterChoice <=13){
                         char applyAnother;
                         cout << "Do you want to apply another filter? (y/n): ";
                         cin >> applyAnother;
