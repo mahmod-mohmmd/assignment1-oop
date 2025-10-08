@@ -54,16 +54,18 @@ void Menu() {
 
 void FiltersMenu() {
     cout << "Available Filters:" << endl;
-    cout << "1. Grayscale Conversion" << endl;
-    cout << "2. Black and White" << endl;
-    cout << "3. Invert Image" << endl;
-    cout << "4. Merge Images" << endl;
-    cout << "5. Flip Image" << endl;
-    cout << "6. Rotate Image" << endl;
-    cout << "9. Add Frame to Image" << endl;
+    cout << "1.  Grayscale Conversion" << endl;
+    cout << "2.  Black and White" << endl;
+    cout << "3.  Invert Image" << endl;
+    cout << "4.  Merge Images" << endl;
+    cout << "5.  Flip Image" << endl;
+    cout << "6.  Rotate Image" << endl;
+    cout << "8.  Crop Image" << endl;
+    cout << "9.  Add Frame to Image" << endl;
+    cout << "11. Resizing Images" << endl;
     cout << "12. Blur Image" << endl;
     cout << "13. sun effect(Bonus)" << endl;
-    cout << "0. Back to Main Menu" << endl;
+    cout << "0.  Back to Main Menu" << endl;
     cout << "Please select a filter: ";
 }
 
@@ -290,8 +292,58 @@ void RotateImage(Image& image){
     }
 }
 
+
+// Filter 8 : Crop Images
+void CropImage(Image& image){
+    int x, y, w, h;
+    cout << "Enter the top-left corner (x y) and dimensions (width height) of the crop rectangle: ";
+    cin >> x >> y >> w >> h;
+
+    if(x < 0 || y < 0 || w <= 0 || h <= 0 || x + w > image.width || y + h > image.height) {
+        cout << "Invalid crop dimensions." << endl;
+        return;
+    }
+
+    Image croppedImage(w, h);
+    for(int i = 0; i < w; i++) {
+        for(int j = 0; j < h; j++) {
+            for(int k = 0; k < image.channels; k++) {
+                croppedImage(i, j, k) = image(x + i, y + j, k);
+            }
+        }
+    }
+
+    image = croppedImage;
+    cout << "Image cropped successfully!" << endl;
+}
 // Filter 9 : Add Frame to Image
 
+// Filter 11: Resizing Images 
+
+void ResizeImage(Image& image){
+    int newWidth, newHeight;
+    cout << "Enter the new width and height: ";
+    cin >> newWidth >> newHeight;
+
+    if(newWidth <= 0 || newHeight <= 0) {
+        cout << "Invalid dimensions." << endl;
+        return;
+    }
+
+    Image resizedImage(newWidth, newHeight);
+    for(int i = 0; i < newWidth; i++) {
+        for(int j = 0; j < newHeight; j++) {
+            int srcX = i * image.width / newWidth;
+            int srcY = j * image.height / newHeight;
+            for(int k = 0; k < image.channels; k++) {
+                resizedImage(i, j, k) = image(srcX, srcY, k);
+            }
+        }
+    }
+
+    image = resizedImage;
+    cout << "Image resized successfully!" << endl;
+}
 void AddFrameToImage(Image& image){
     cout << "choose the frame type : " << endl;
     cout << "1. simple frame" << endl;
@@ -486,8 +538,14 @@ int main () {
                     else if(filterChoice == 6){
                         RotateImage(image);
                     }
+                    else if(filterChoice == 8){
+                        CropImage(image);
+                    }
                     else if(filterChoice == 9){
                         AddFrameToImage(image);
+                    }
+                    else if(filterChoice == 11){
+                        ResizeImage(image);
                     }
                     else if(filterChoice == 12){
                         BlurImage(image);
