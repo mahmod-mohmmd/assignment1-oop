@@ -317,33 +317,6 @@ void CropImage(Image& image){
     cout << "Image cropped successfully!" << endl;
 }
 // Filter 9 : Add Frame to Image
-
-// Filter 11: Resizing Images 
-
-void ResizeImage(Image& image){
-    int newWidth, newHeight;
-    cout << "Enter the new width and height: ";
-    cin >> newWidth >> newHeight;
-
-    if(newWidth <= 0 || newHeight <= 0) {
-        cout << "Invalid dimensions." << endl;
-        return;
-    }
-
-    Image resizedImage(newWidth, newHeight);
-    for(int i = 0; i < newWidth; i++) {
-        for(int j = 0; j < newHeight; j++) {
-            int srcX = i * image.width / newWidth;
-            int srcY = j * image.height / newHeight;
-            for(int k = 0; k < image.channels; k++) {
-                resizedImage(i, j, k) = image(srcX, srcY, k);
-            }
-        }
-    }
-
-    image = resizedImage;
-    cout << "Image resized successfully!" << endl;
-}
 void AddFrameToImage(Image& image){
     cout << "choose the frame type : " << endl;
     cout << "1. simple frame" << endl;
@@ -419,6 +392,33 @@ void AddFrameToImage(Image& image){
     cout << "Frame added successfully!" << endl;
 }
 
+
+// Filter 11: Resizing Images 
+
+void ResizeImage(Image& image){
+    int newWidth, newHeight;
+    cout << "Enter the new width and height: ";
+    cin >> newWidth >> newHeight;
+
+    if(newWidth <= 0 || newHeight <= 0) {
+        cout << "Invalid dimensions." << endl;
+        return;
+    }
+
+    Image resizedImage(newWidth, newHeight);
+    for(int i = 0; i < newWidth; i++) {
+        for(int j = 0; j < newHeight; j++) {
+            int srcX = i * image.width / newWidth;
+            int srcY = j * image.height / newHeight;
+            for(int k = 0; k < image.channels; k++) {
+                resizedImage(i, j, k) = image(srcX, srcY, k);
+            }
+        }
+    }
+
+    image = resizedImage;
+    cout << "Image resized successfully!" << endl;
+}
 
 // Filrer 12 : Blur Image
 
