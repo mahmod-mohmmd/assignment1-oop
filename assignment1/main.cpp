@@ -62,7 +62,7 @@ void FiltersMenu() {
     cout << "6. Rotate Image" << endl;
     cout << "9. Add Frame to Image" << endl;
     cout << "12. Blur Image" << endl;
-    cout << "13. sun effect(Bounce)" << endl;
+    cout << "13. sun effect(Bonus)" << endl;
     cout << "0. Back to Main Menu" << endl;
     cout << "Please select a filter: ";
 }
@@ -420,7 +420,7 @@ void BlurImage(Image& image){
 }
 
 
-//filter 13 : (bounce) sun effect
+//filter 13 : (bonus) sun effect
 void sun(Image& image){
     for(int i = 0 ; i < image.width ; i++){
         for(int j = 0 ; j < image.height ; j++){
