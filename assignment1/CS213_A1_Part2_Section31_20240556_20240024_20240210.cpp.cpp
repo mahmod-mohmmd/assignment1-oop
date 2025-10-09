@@ -19,7 +19,7 @@ Team Members:
 
 2. Ahmed Hassan    - ID : 20240024 (4 Filters: Grayscale , Merge , Darken and Lighten Image , Detect Image Edges)
 
-3. Zyad Osama      - ID : 20240210 (4 Filters: Black and White , Flip , Crop Images , Resizing Images)
+3. Zyad Osama      - ID : 20240210 (5 Filters: Black and White , Flip , Crop Images , Resizing Images,Purple Effect (Bonus) )
 
 Section : S31
 
@@ -67,6 +67,7 @@ void FiltersMenu() {
     cout << "11. Resizing Images" << endl;
     cout << "12. Blur Image" << endl;
     cout << "13. sun effect(Bonus)" << endl;
+    cout << "14. Purple Effect (Bonus)" << endl;
     cout << "0.  Back to Main Menu" << endl;
     cout << "Please select a filter: ";
 }
@@ -547,6 +548,25 @@ void sun(Image& image){
     cout << "Sun effect applied successfully!" << endl;
 }
 
+//filter 14 : (bonus) purple effect
+
+// Filter 14 : Purple Effect
+void PurpleEffect(Image& image) {
+    for (int y = 0; y < image.height; y++) {
+        for (int x = 0; x < image.width; x++) {
+            unsigned char r = image(x, y, 0);
+            unsigned char g = image(x, y, 1);
+            unsigned char b = image(x, y, 2);
+            int newR = min(255, (int)(r * 1.5));
+            int newG = max(0, (int)(g * 0.5));
+            int newB = min(255, (int)(b * 1.5));
+            image(x, y, 0) = newR;
+            image(x, y, 1) = newG;
+            image(x, y, 2) = newB;
+        }
+    }
+    cout << "Purple effect successfully!"<<endl;
+}
 int main () {
     Image image;
     bool imageLoaded = false;
@@ -619,7 +639,9 @@ int main () {
                     else if(filterChoice == 13){
                         sun(image);
                     }
-
+                    else if(filterChoice == 14){
+                        PurpleEffect(image);
+                    }
                     else if(filterChoice == 0){
                         cout << "Returning to Main Menu..." << endl;
                         backToMainMenu = true;
