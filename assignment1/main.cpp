@@ -60,10 +60,15 @@ void FiltersMenu() {
     cout << "4.  Merge Images" << endl;
     cout << "5.  Flip Image" << endl;
     cout << "6.  Rotate Image" << endl;
+<<<<<<< HEAD
     cout << "7.  Darken and Lighten Image" << endl;
     cout << "8.  Crop Image" << endl;
     cout << "9.  Add Frame to Image" << endl;
     cout << "10.Detect Image Edges" << endl;
+=======
+    cout << "8.  Crop Image" << endl;
+    cout << "9.  Add Frame to Image" << endl;
+>>>>>>> 1d104d3f5bbb7282d942ac14c0bcd942d19cfd10
     cout << "11. Resizing Images" << endl;
     cout << "12. Blur Image" << endl;
     cout << "13. sun effect(Bonus)" << endl;
@@ -294,6 +299,7 @@ void RotateImage(Image& image){
     }
 }
 
+<<<<<<< HEAD
 // Filter 7 :  Darken and Lighten Image 
 void DarkenLightenImage(Image& image){
     int choice;
@@ -324,6 +330,9 @@ void DarkenLightenImage(Image& image){
         cout << "Invalid choice." << endl;
     }
 }
+=======
+
+>>>>>>> 1d104d3f5bbb7282d942ac14c0bcd942d19cfd10
 // Filter 8 : Crop Images
 void CropImage(Image& image){
     int x, y, w, h;
@@ -482,6 +491,33 @@ void ResizeImage(Image& image){
     cout << "Image resized successfully!" << endl;
 }
 
+// Filter 11: Resizing Images 
+
+void ResizeImage(Image& image){
+    int newWidth, newHeight;
+    cout << "Enter the new width and height: ";
+    cin >> newWidth >> newHeight;
+
+    if(newWidth <= 0 || newHeight <= 0) {
+        cout << "Invalid dimensions." << endl;
+        return;
+    }
+
+    Image resizedImage(newWidth, newHeight);
+    for(int i = 0; i < newWidth; i++) {
+        for(int j = 0; j < newHeight; j++) {
+            int srcX = i * image.width / newWidth;
+            int srcY = j * image.height / newHeight;
+            for(int k = 0; k < image.channels; k++) {
+                resizedImage(i, j, k) = image(srcX, srcY, k);
+            }
+        }
+    }
+
+    image = resizedImage;
+    cout << "Image resized successfully!" << endl;
+}
+
 // Filrer 12 : Blur Image
 
 void BlurImage(Image& image){
@@ -598,18 +634,24 @@ int main () {
                     else if(filterChoice == 6){
                         RotateImage(image);
                     }
+<<<<<<< HEAD
                     else if(filterChoice == 7){
                         DarkenLightenImage(image);
                     }
+=======
+>>>>>>> 1d104d3f5bbb7282d942ac14c0bcd942d19cfd10
                     else if(filterChoice == 8){
                         CropImage(image);
                     }
                     else if(filterChoice == 9){
                         AddFrameToImage(image);
                     }
+<<<<<<< HEAD
                     else if(filterChoice == 10){
                         DetectImageEdges(image);
                     }
+=======
+>>>>>>> 1d104d3f5bbb7282d942ac14c0bcd942d19cfd10
                     else if(filterChoice == 11){
                         ResizeImage(image);
                     }
