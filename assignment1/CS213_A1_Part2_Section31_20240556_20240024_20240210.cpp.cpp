@@ -63,7 +63,7 @@ void FiltersMenu() {
     cout << "7.  Darken and Lighten Image" << endl;
     cout << "8.  Crop Image" << endl;
     cout << "9.  Add Frame to Image" << endl;
-    cout << "10.Detect Image Edges" << endl;
+    cout << "10. Detect Image Edges" << endl;
     cout << "11. Resizing Images" << endl;
     cout << "12. Blur Image" << endl;
     cout << "13. sun effect(Bonus)" << endl;
@@ -486,7 +486,7 @@ void ResizeImage(Image& image){
 
 void BlurImage(Image& image){
 
-    int blurRadius = 15 ;
+    int blurRadius = 20 ;
 
     Image copy(image.width, image.height);
     for(int i = 0 ; i < image.width ; i++){
